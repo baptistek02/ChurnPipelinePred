@@ -58,14 +58,14 @@ def stack_model(
         X_train_normalized,
         X_test_normalized,
         y_train,
-        threashold=0.3
+        threshold=0.3
 ):
     """
     Stacking with Logistic Regression, RandomForestClassifier, GradientBoostingClassifier
     :param X_train_normalized: needs to be normalized
     :param X_test_normalized: needs to be normalized
     :param y_train: needs to be caterogical
-    :param threashold:
+    :param threshold:
     :return: classifier, y_pred, y_proba
     """
 
@@ -91,7 +91,7 @@ def stack_model(
 
     # y_pred = clf.predict(X_test_normalized)
     y_proba = clf.predict_proba(X_test_normalized)[:, 1]
-    y_pred = (y_proba > threashold).astype(int)  # seuil 0.3
+    y_pred = (y_proba > threshold).astype(int)  # seuil 0.3
 
     return clf, y_pred, y_proba
 
@@ -120,6 +120,24 @@ def get_metrics(
         "model_f1_score" : f1_score(y_test, y_pred, average=None),
         "model_cross_validation" : np.mean(cross_val_score(clf, X_train_normalized, y_train, cv=5))
     }
+
+def predict(clf, X_new, threshold=0.3):
+    """
+    Predict new test set based on a classifier
+    :param clf: trained classifier model
+    :param X_new: new test set
+    :param threshold:
+    :return: df with predictions and probabilities
+    """
+    # Normalize
+    X_new_mean = X_new.mean()
+    X_new_std = X_new.std()
+    X_new_normalized = (X_new - X_new_mean) / X_new_std
+
+    y_proba = clf.predict_proba(X_new_normalized)[:, 1]
+    y_pred = (y_proba > threshold).astype(int)  # seuil 0.3
+
+    return y_proba, y_pred
 
 
 

@@ -6,6 +6,7 @@ from src.visualization import make_cluster_plot, make_spider_plot, make_bar_chur
 def generate_report(
         df,
         df_segm_pca_kmeans,
+        df_predict,
         sil_score,
         y_test,
         y_proba,
@@ -68,5 +69,19 @@ def generate_report(
     for key, value in model_metrics.items():
         elements.append(Paragraph(f"{key}: {value}", styles['BodyText']))
     elements.append(Spacer(1, 12))
+
+    table_data = [df_predict.columns.tolist()] + df_predict.values.tolist()
+    table = Table(table_data)
+
+    style = TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold')
+    ])
+    table.setStyle(style)
+
+    elements.append(table)
 
     doc.build(elements)
