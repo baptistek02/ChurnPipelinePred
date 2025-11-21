@@ -15,6 +15,20 @@ def generate_report(
         title="Churn report",
         objective="Objective",
         ):
+    """
+    Generate a PDF Churn Report
+    :param df: cleaned df
+    :param df_segm_pca_kmeans: df with components cols and a segment col
+    :param sil_score: silhouette score
+    :param y_test:
+    :param y_proba:
+    :param model: classifier model
+    :param model_metrics: metrics of the classifier model
+    :param palette: color palette if None then random colors will be used
+    :param title: title of the report
+    :param objective: Objective of the report
+    :return:
+    """
     doc = SimpleDocTemplate("./output/report.pdf", pagesize=A4)
     elements = []
 

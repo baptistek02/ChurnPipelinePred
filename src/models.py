@@ -10,6 +10,13 @@ from sklearn.model_selection import cross_val_score
 import numpy as np
 
 def make_profiles(df, n_components=10, n_clusters=4):
+    """
+    Make clusters of a df, Kmeans with PCA reduction
+    :param df: needs to be cleaned, pd.dummies()
+    :param n_components: use cumulative_explained_variance()
+    :param n_clusters: use determine_cluster_numbers()
+    :return: df with components and segment col, silhouette score
+    """
     # Normalize
     scaler = StandardScaler()
     standardized_df = scaler.fit_transform(df)
@@ -33,6 +40,15 @@ def make_profiles(df, n_components=10, n_clusters=4):
     return df_segm_pca_kmeans, sil_score
 
 def train_classifier(model, X_train, X_test, y_train, threshold=0.3):
+    """
+    Train a classifier on X_train, X_test, y_train, and threshold
+    :param model: classifier
+    :param X_train: needs to be normalized
+    :param X_test: needs to be normalized
+    :param y_train: needs to be caterogical
+    :param threshold:
+    :return: classifier, y_pred, y_proba
+    """
     clf = model.fit(X_train, y_train)
     y_proba = clf.predict_proba(X_test)[:, 1]
     y_pred = (y_proba > threshold).astype(int)
@@ -44,6 +60,14 @@ def stack_model(
         y_train,
         threashold=0.3
 ):
+    """
+    Stacking with Logistic Regression, RandomForestClassifier, GradientBoostingClassifier
+    :param X_train_normalized: needs to be normalized
+    :param X_test_normalized: needs to be normalized
+    :param y_train: needs to be caterogical
+    :param threashold:
+    :return: classifier, y_pred, y_proba
+    """
 
     base_learners = [
         ('lr', LogisticRegression()),
@@ -79,6 +103,16 @@ def get_metrics(
         y_pred,
         y_proba,
 ):
+    """
+    Get metrics for a classifier model
+    :param clf: classifier
+    :param X_train_normalized: needs to be normalized
+    :param y_train: needs to be categorical
+    :param y_test: needs to be categorical
+    :param y_pred:
+    :param y_proba:
+    :return: a dictionnary of metrics : accuracy, auc, confusion matrix, f1 score, cross validation score
+    """
     return {
         "model_accuracy" : accuracy_score(y_test, y_pred),
         "model_auc" : roc_auc_score(y_test, y_proba),

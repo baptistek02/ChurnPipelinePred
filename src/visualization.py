@@ -3,20 +3,16 @@ import seaborn as sns
 import pandas as pd
 import numpy as np
 from sklearn.metrics import roc_curve, RocCurveDisplay
-from src.utils import generate_random_colors
-
-def detect_components(df):
-    return [col for col in df.columns if col.startswith("Component")]
-
-
-def detect_cluster_column(df):
-    matches = [col for col in df.columns if "segment" in col.lower()]
-    if len(matches) == 0:
-        raise ValueError("No cluster column found (expected name containing 'Segment').")
-    return matches[0]
-
+from src.utils import generate_random_colors, detect_components, detect_cluster_column
 
 def make_cluster_plot(df, output_path="./assets/cluster_plot.png", palette=None):
+    """
+    Save a scatter plot that shows clusters repartition
+    :param df: needs to contain Components columns and a Segment column
+    :param output_path:
+    :param palette: colours palette if None random colors are used
+    :return:
+    """
     components = detect_components(df)
     if len(components) < 2:
         raise ValueError("At least 2 PCA components are required.")
@@ -46,6 +42,15 @@ def make_cluster_plot(df, output_path="./assets/cluster_plot.png", palette=None)
 def make_spider_plot(df_original, df_segm, target="Churn",
                      output_path="./assets/spider_plot.png",
                      palette=None):
+    """
+    Save a spider plot that shows clusters most correlated caracteristics with target
+    :param df_original:
+    :param df_segm: needs to contain Components columns and a Segment column
+    :param target:
+    :param output_path:
+    :param palette: colors palette if None random colors are used
+    :return:
+    """
 
     components = detect_components(df_segm)
     cluster_col = detect_cluster_column(df_segm)
@@ -93,6 +98,14 @@ def make_spider_plot(df_original, df_segm, target="Churn",
 def make_bar_churn_plot(df_segm, target="Churn",
                         output_path="./assets/bar_churn_plot.png",
                         palette=None):
+    """
+    Save a bar plot that shows clusters / target
+    :param df_segm: needs to contain Components columns and a Segment column
+    :param target:
+    :param output_path:
+    :param palette: colors palette if None random colors are used
+    :return:
+    """
 
     components = detect_components(df_segm)
     cluster_col = detect_cluster_column(df_segm)
@@ -121,6 +134,14 @@ def make_roc_curve(
         model,
         output_path="./assets/roc_curve.png",
 ):
+    """
+    Save a roc curve for the input model
+    :param y_test:
+    :param y_proba: can use predict_proba
+    :param model: classification model
+    :param output_path:
+    :return:
+    """
     fpr, tpr, _ = roc_curve(y_test, y_proba, pos_label=model.classes_[1])
     roc_display = RocCurveDisplay(fpr=fpr, tpr=tpr).plot()
 

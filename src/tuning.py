@@ -6,6 +6,11 @@ from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 
 def get_gradient_boost_best_params(X_train_normalized, y_train):
+    """
+    :param X_train_normalized: features columns need to be normalized
+    :param y_train: target must be categorical
+    :return: best params and score for gradient boost model
+    """
     param_grid_gb = {
         'n_estimators': [100, 200, 300],
         'learning_rate': [0.01, 0.05, 0.1],
@@ -19,6 +24,11 @@ def get_gradient_boost_best_params(X_train_normalized, y_train):
     return grid_gb.best_params_, grid_gb.best_score_
 
 def get_random_forest_best_params(X_train_normalized, y_train):
+    """
+    :param X_train_normalized: features columns need to be normalized
+    :param y_train: target must be categorical
+    :return: best params and score for random forest
+    """
     param_grid_rf = {
         'n_estimators': [100, 200],
         'max_depth': [None, 5],
@@ -34,6 +44,11 @@ def get_random_forest_best_params(X_train_normalized, y_train):
 
 # Keep 80% of Cumuluative Explained Variance to know how many components you need to keep
 def cumulative_explained_variance(df):
+    """
+    Display a plot of explained variance by components.
+    :param df:
+    :return:
+    """
     scaler = StandardScaler()
     standardized_df = scaler.fit_transform(df)
 
@@ -48,8 +63,14 @@ def cumulative_explained_variance(df):
     plt.legend("Keep 80% of Cumuluative Explained Variance")
     plt.show()
 
-# Elbow Method to choose the number of clusters for KMeans
+# Elbow Method to choose the number of clusters for n components, for KMeans
 def determine_cluster_numbers(df, n_components):
+    """
+    Display a plot that show for n cluster, the inertia
+    :param df:
+    :param n_components: use cumulative_explained_variance() before if needed
+    :return:
+    """
     scaler = StandardScaler()
     standardized_df = scaler.fit_transform(df)
 
