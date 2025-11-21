@@ -3,6 +3,11 @@ from sklearn.model_selection import train_test_split
 from imblearn.over_sampling import SMOTE
 
 def load_and_clean(file_path):
+    """
+    Load a csv file and clean it up
+    :param file_path:
+    :return: cleaned dataframe
+    """
     df = pd.read_csv(file_path, sep=",")
 
     # CLean NA and duplicates
@@ -40,9 +45,17 @@ def load_and_clean(file_path):
     return df
 
 def split_data(df, target="Churn"):
+    """
+    Split a dataframe into 2 sets : train set and test set
+    Apply SMOTE on train test to make it balanced
+    :param df: cleaned df
+    :param target:
+    :return: normalized features set (train, test) and target (train, test)
+    """
 
     y = df[target]
-    X = df.drop(columns=[target])
+    X = df.drop(columns=[target]).drop(columns=[detect_components(df)])
+    X = pd.get_dummies(dft, columns=[detect_cluster_column(df)], drop_first=True, dtype=int)
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y,
